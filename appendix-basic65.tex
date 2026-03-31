@@ -899,7 +899,7 @@ BANK 1 : REM SELECT MEMORY CONFIGURATION 1
 
 \item [Format:]   {\bf BLOAD} filename [{\bf,B} bank] [{\bf,P} address] [{\bf,R}] [{\bf,D} drive] [{\bf,U} unit]
 
-\item [Usage:]    Loads a file of type {\bf PRG} into RAM at address {\bf,P}. (``Binary load.'')
+\item [Usage:]    Loads a file of type {\bf PRG} into RAM at address {\bf P}. (``Binary load.'')
 
                   {\bf BLOAD} has two modes: The flat memory address mode can be used to load a program to any address in the 28-bit (256MB) address range where RAM is installed. This includes the standard RAM banks 0 to 5, as well as the 8MB of "attic RAM" at address \$8000000 (800.0000).
 
@@ -940,7 +940,7 @@ BLOAD (FI$), B(BA%), P(PA), U(UN%)
 
 BLOAD "CHUNK", P($8000000)
 
-BLOAD "USER DATA,S", P $1600, R
+BLOAD "USER DATA,S", P($1600), R
 \end{verbatim}
 \end{tcolorbox}
 \end{description}
@@ -1117,7 +1117,7 @@ BOX 20, 0,  140, 0, 160, 80,  0, 80
 
                   This mode is triggered by specifying addresses for the start and end parameter {\bf P}, that are larger than \$FFFF. The bank parameter is ignored in this mode. This flat memory mode allows saving ranges greater than 64KB.
 
-                  For compatibility reasons with older BASIC versions, {\bf BSAVE} accepts the syntax with 16-bit addresses at e{\bf P} and a bank number at {\bf B} as well. The attic RAM is out of range for this compatibility mode. This mode cannot cross bank boundaries, so the start and end address must be in the same bank.
+                  For compatibility reasons with older BASIC versions, {\bf BSAVE} accepts the syntax with 16-bit addresses at {\bf P} and a bank number at {\bf B} as well. The attic RAM is out of range for this compatibility mode. This mode cannot cross bank boundaries, so the start and end address must be in the same bank.
 
                   The optional parameter {\bf R} (``raw mode'') avoids writing the 16-bit starting address as the first two bytes. The two-byte address header is needed for PRG files that are loaded to the stored address, but is typically unwanted for SEQ files. {\bf BSAVE} writes the starting address as the first two bytes of the file by default.
 
@@ -1137,7 +1137,7 @@ BOX 20, 0,  140, 0, 160, 80,  0, 80
 
 \item [Remarks:]  The length of the file is {\bf end - start + 2}.
 
-                  If the number after an argument letter is not a decimal number, it must be set in parenthesis, as shown in the third and fourth line of the examples.
+                  If the number after an argument letter is not a decimal number (such as a hexadecimal constant or variable name), it must be set in parenthesis.
 
                   When saving a file of type {\bf PRG}, it is typical for the first two bytes of the file to be the 16-bit load address. This is the default. If the start address is in a bank other than zero (the start address is larger than \$FFFF), only the two lowest bytes of the address are written.
 
@@ -1156,7 +1156,7 @@ BSAVE "ML ROUTINES", B1, P($9000) TO P($A000)
 
 BSAVE (FI$), B(BA%), P(PA) TO P(PE), U(UN%)
 
-BSAVE "USER DATA,S", P $1600 TO P $16FF, R
+BSAVE "USER DATA,S", P($1600) TO P($16FF), R
 \end{verbatim}
 \end{tcolorbox}
 \end{description}
@@ -1587,7 +1587,7 @@ CHARDEF 9, $18, $18, $18, $18, $18, $18, $18, $00 : REM MAKE 'I' SANS SERIF
 
                   \dirnamedefinition
 
-                  Dependening on the {\bf unit} type, {\bf CHDIR} is applied to different filesystems.
+                  Depending on the {\bf unit} type, {\bf CHDIR} is applied to different filesystems.
 
                   {\bf UNIT 12} is reserved for the SD-Card (FAT filesystem). This command can be used to navigate to subdirectories and mount disk images that are stored there. {\bf CHDIR "..",U12} changes to the parent directory on {\bf UNIT 12}.
 
@@ -2151,7 +2151,7 @@ COPY "M*", U9 TO U11     : REM PATTERN COPY
 
 \item [Returns:]  The cosine of an angle.
 
-                  The {\bf COS} function expects an arguent in units of radians.
+                  The {\bf COS} function expects an argument in units of radians.
 
                   The {\bf COSD} variant expects an argument in units of degrees.
 
@@ -4589,7 +4589,7 @@ FREEZER : REM CALL FREEZER MENU
 
 \item [Usage:]    Gets the next character, or byte value of the next character, from the keyboard queue. If the queue is empty, the program will wait until a key has been pressed.
 
-                  After a key has been pressed, the e {\bf variable} will be set and program execution will continue. When used with a string variable, a one character string is created and assigned. Otherwise if the variable is of type numeric, the byte value is assigned.
+                  After a key has been pressed, the {\bf variable} will be set and program execution will continue. When used with a string variable, a one character string is created and assigned. Otherwise if the variable is of type numeric, the byte value is assigned.
 
 \item [Example:]  Using {\bf GETKEY}
 
@@ -6625,8 +6625,8 @@ NEW RESTORE : REM TRY TO RECOVER NEW'ED PROGRAM
                      \hline
                         {\bf Expression} & {\bf Result}  \\
                      \hline
-                        \texttt{NOT 0}  &  \texttt{1} \\
-                        \texttt{NOT 1}  &  \texttt{0} \\
+                        \texttt{NOT 0}  &  \texttt{-1} \\
+                        \texttt{NOT -1}  &  \texttt{0} \\
                      \hline
                   \end{tabular}
                   \end{center}
@@ -6641,9 +6641,10 @@ NEW RESTORE : REM TRY TO RECOVER NEW'ED PROGRAM
 PRINT NOT 3
 -4
 
-PRINT NOT 64
--65
+PRINT NOT -65
+64
 
+C = 257
 OK = C < 256 AND C >= 0
 IF (NOT OK) THEN PRINT "NOT A BYTE VALUE"
 \end{verbatim}
@@ -7416,7 +7417,7 @@ HELLO
 
 \item [Remarks:]  Analogue paddles are noisy and inexact. The range may be less than 0 -- 255 and there could be some jitter in the values returned from {\bf POT}.
 
-                  Paddles made for Atari game consoles (using potentiometers with lower resisantce) return different values from paddles made for Commodore computers (using potentiometers with higher resisantce). Commodore paddles provide more accurate values in the 0 -- 255 range.
+                  Paddles made for Atari game consoles return different values from paddles made for Commodore computers. Commodore paddles provide the most accurate values in the 0 -- 255 range while turning the paddle its full distance. Atari paddles tend to go between 0 and 255 for only part of a turn of the paddle, resulting in faster movement and a ``dead zone'' for the rest of the turn.
 
 \item [Example:]  Using {\bf POT}
 
@@ -9046,7 +9047,7 @@ SET VERIFY ON   : REM ACTIVATE VERIFY-AFTER-WTITE MODE
 
 \item [Returns:]  The sine of an angle.
 
-                  The {\bf SIN} function expects an arguent in units of radians.
+                  The {\bf SIN} function expects an argument in units of radians.
 
                   The {\bf SIND} variant expects an argument in units of degrees.
 
@@ -9312,7 +9313,7 @@ SPEED 3.5 : REM SET SPEED TO 3.5 MHZ
 
                   {\bf mode} multi-colour sprite on or off (1: on, 0: off).
 
-                  {\bf SPRITE SYS} sets properties of the sprite system as a whole. It accepts one named argument: {\bf R hires-mode} enables (1) or disables (0) high resolution sprite mode. When enabled, all sprites use high resolution pixels in both vertical and horizontal dimensions, appearing half the size of low resolution mode. High resolution mode also uses a different coordintae plane for sprites.
+                  {\bf SPRITE SYS} sets properties of the sprite system as a whole. It accepts one named argument: {\bf R hires-mode} enables (1) or disables (0) high resolution sprite mode. When enabled, all sprites use high resolution pixels in both vertical and horizontal dimensions, appearing half the size of low resolution mode. High resolution mode also uses a different coordinate plane for sprites.
 
 \item [Remarks:]  {\bf SPRCOLOR} must be used to set additional colours for multi-colour sprites (mode = 1).
 
@@ -9754,7 +9755,7 @@ RUN
 
 \item [Returns:]  The tangent of an angle.
 
-                  The {\bf TAN} function expects an arguent in units of radians.
+                  The {\bf TAN} function expects an argument in units of radians.
 
                   The {\bf TAND} variant expects an argument in units of degrees.
 
@@ -10511,7 +10512,7 @@ VERIFY "1:DUNGEON", 10
 \verbatimfont{\codefont}
 \begin{verbatim}
 10 BANK 128
-20 WAIT 211, 1 : REM WAIT FOR SHIFT KEY BEING PRESSED
+20 WAIT 54801, 1 : REM WAIT FOR LEFT SHIFT KEY BEING PRESSED
 \end{verbatim}
 \end{tcolorbox}
 \end{description}
